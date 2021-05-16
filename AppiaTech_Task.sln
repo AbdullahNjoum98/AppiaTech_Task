@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30711.63
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", "{A38CA3F2-02C1-431A-A434-E2F229EE84C3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{982F036A-B5E0-4F08-BB07-D60403B02E0C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskAPI", "WebApplication1\TaskAPI.csproj", "{1F63D4CA-112B-4370-84FA-F96D767D9660}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A38CA3F2-02C1-431A-A434-E2F229EE84C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A38CA3F2-02C1-431A-A434-E2F229EE84C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A38CA3F2-02C1-431A-A434-E2F229EE84C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A38CA3F2-02C1-431A-A434-E2F229EE84C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{982F036A-B5E0-4F08-BB07-D60403B02E0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{982F036A-B5E0-4F08-BB07-D60403B02E0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{982F036A-B5E0-4F08-BB07-D60403B02E0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{982F036A-B5E0-4F08-BB07-D60403B02E0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F63D4CA-112B-4370-84FA-F96D767D9660}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F63D4CA-112B-4370-84FA-F96D767D9660}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F63D4CA-112B-4370-84FA-F96D767D9660}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F63D4CA-112B-4370-84FA-F96D767D9660}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C5C35B04-20AE-4B02-84BE-C48E397C7188}
+	EndGlobalSection
+EndGlobal
