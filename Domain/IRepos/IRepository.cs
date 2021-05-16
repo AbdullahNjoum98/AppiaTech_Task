@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.VMs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,18 +11,18 @@ namespace Domain.IRepos
     public interface IRepository
     {
         #region Employees
-        public Task<List<Employee>> GetAllEmployees();
-        public Task<Employee> GetEmployee(long Id);
-        public bool AddEmployee(Employee employee);
-        public bool UpdateEmployee(Employee employee);
-        public bool DeleteEmployee(long id);
+        public Task<List<EmployeeResource>> GetAllEmployees();
+        public Task<EmployeeResource> GetEmployee(int Id);
+        public bool AddEmployee(EmployeeVM employee);
+        public bool UpdateEmployee(EmployeeVM employee);
+        public bool DeleteEmployee(int id);
         #endregion
         #region Students
-        public Task<List<Student>> GetAllStudents();
-        public Task<Student> GetStudent(long Id);
-        public bool AddStudent(Student student);
-        public bool UpdateStudent(Student student);
-        public bool DeleteStudent(long Id);
+        public Task<List<StudentResource>> GetAllStudents();
+        public Task<StudentResource> GetStudent(int Id);
+        public bool AddStudent(StudentVM student);
+        public bool UpdateStudent(StudentVM student);
+        public bool DeleteStudent(int Id);
         #endregion
 
     }

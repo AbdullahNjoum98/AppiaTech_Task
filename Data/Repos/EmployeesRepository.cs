@@ -1,5 +1,7 @@
-﻿using Domain.Entities;
+﻿using AutoMapper;
+using Domain.Entities;
 using Domain.IRepos;
+using Domain.VMs;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -12,16 +14,18 @@ namespace Data.Repos
     public partial class Repository : IRepository
     {
         private readonly ProjectDbContext dbContext;
+        private readonly IMapper _mapper;
 
-        public Repository(ProjectDbContext dbContext)
+        public Repository(ProjectDbContext dbContext, IMapper mapper)
         {
             this.dbContext = dbContext;
+            this._mapper = mapper;
         }
-        public bool AddEmployee(Employee employee)
+        public bool AddEmployee(EmployeeVM employee)
         {
             try
             {
-                dbContext.Employees.Add(employee);
+                dbContext.Employees.Add(_mapper.Map<Employee>(employee));
                 dbContext.SaveChangesAsync();
                 return true;
             }
@@ -32,7 +36,7 @@ namespace Data.Repos
         }
 
 
-        public bool DeleteEmployee(long Id)
+        public bool DeleteEmployee(int Id)
         {
             try
             {
@@ -46,21 +50,21 @@ namespace Data.Repos
             }
         }
 
-        public Task<List<Employee>> GetAllEmployees()
+        public async Task<List<EmployeeResource>> GetAllEmployees()
         {
-            return dbContext.Employees.ToListAsync();
+            return _mapper.Map<List<EmployeeResource>>(await dbContext.Employees.ToListAsync());
         }
 
-        public Task<Employee> GetEmployee(long Id)
+        public async Task<EmployeeResource> GetEmployee(int Id)
         {
-            return dbContext.Employees.Where(e => e.Id == Id).FirstOrDefaultAsync();
+            return _mapper.Map<EmployeeResource>(await dbContext.Employees.Where(e => e.Id == Id).FirstOrDefaultAsync());
         }
 
-        public bool UpdateEmployee(Employee employee)
+        public bool UpdateEmployee(EmployeeVM employee)
         {
             try
             {
-                dbContext.Employees.Update(employee);
+                dbContext.Employees.Update(_mapper.Map<Employee>(employee));
                 dbContext.SaveChangesAsync();
                 return true;
             }

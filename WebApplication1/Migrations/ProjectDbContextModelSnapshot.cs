@@ -21,9 +21,9 @@ namespace TaskAPI.Migrations
 
             modelBuilder.Entity("Domain.Entities.Course", b =>
                 {
-                    b.Property<long>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Code")
@@ -34,14 +34,14 @@ namespace TaskAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.ToTable("Courses");
                 });
 
             modelBuilder.Entity("Domain.Entities.Person", b =>
                 {
-                    b.Property<long>("ID")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -52,13 +52,14 @@ namespace TaskAPI.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("Phone")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.ToTable("People");
                 });
@@ -77,10 +78,10 @@ namespace TaskAPI.Migrations
                 {
                     b.HasBaseType("Domain.Entities.Person");
 
-                    b.Property<long?>("favCourseID")
-                        .HasColumnType("bigint");
+                    b.Property<int?>("favCourseId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("favCourseID");
+                    b.HasIndex("favCourseId");
 
                     b.ToTable("Students");
                 });
@@ -89,7 +90,7 @@ namespace TaskAPI.Migrations
                 {
                     b.HasOne("Domain.Entities.Person", null)
                         .WithOne()
-                        .HasForeignKey("Domain.Entities.Employee", "ID")
+                        .HasForeignKey("Domain.Entities.Employee", "Id")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
                 });
@@ -98,13 +99,13 @@ namespace TaskAPI.Migrations
                 {
                     b.HasOne("Domain.Entities.Person", null)
                         .WithOne()
-                        .HasForeignKey("Domain.Entities.Student", "ID")
+                        .HasForeignKey("Domain.Entities.Student", "Id")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.Course", "favCourse")
                         .WithMany()
-                        .HasForeignKey("favCourseID");
+                        .HasForeignKey("favCourseId");
 
                     b.Navigation("favCourse");
                 });

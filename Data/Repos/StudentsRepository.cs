@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.IRepos;
+using Domain.VMs;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -11,22 +12,22 @@ namespace Data.Repos
 {
     public partial class Repository : IRepository
     {
-        public bool AddStudent(Student student)
+        public bool AddStudent(StudentVM student)
         {
             try
             {
-                dbContext.Students.Add(student);
+                dbContext.Students.Add(_mapper.Map<Student>(student));
                 dbContext.SaveChangesAsync();
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return false;
             }
         }
 
 
-        public bool DeleteStudent(long Id)
+        public bool DeleteStudent(int Id)
         {
             try
             {
@@ -41,22 +42,22 @@ namespace Data.Repos
             }
         }
 
-        public Task<List<Student>> GetAllStudents()
+        public async Task<List<StudentResource>> GetAllStudents()
         {
-            return dbContext.Students.Include(e=>e.favCourse).ToListAsync();
+            return _mapper.Map<List<StudentResource>>(await dbContext.Students.Include(e=>e.favCourse).ToListAsync());
         }
 
-        public Task<Student> GetStudent(long Id)
+        public async Task<StudentResource> GetStudent(int Id)
         {
-            return dbContext.Students.Include(e=>e.favCourse).Where(e => e.Id == Id).FirstOrDefaultAsync();
+            return _mapper.Map<StudentResource>(await dbContext.Students.Include(e=>e.favCourse).Where(e => e.Id == Id).FirstOrDefaultAsync());
 
         }
 
-        public bool UpdateStudent(Student student)
+        public bool UpdateStudent(StudentVM student)
         {
             try
             {
-                dbContext.Students.Update(student);
+                dbContext.Students.Update(_mapper.Map<Student>(student));
                 dbContext.SaveChangesAsync();
                 return true;
             }

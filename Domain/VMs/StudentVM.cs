@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Domain.VMs
 {
-    public class StudentVM
+    public class StudentVM:PersonVM
     {
         [Required]
         public CourseVM favCourse { get; set; }
