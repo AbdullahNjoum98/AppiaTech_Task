@@ -9,7 +9,7 @@ namespace Domain.VMs
 {
     public class PersonVM
     {
-        public int Id { get; set; }
+        public Int64 Id { get; set; }
         [Required]
         [MinLength(5)]
         [MaxLength(30)]

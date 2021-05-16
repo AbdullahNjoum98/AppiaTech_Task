@@ -2,6 +2,7 @@
 using Data.Repos;
 using Domain.Entities;
 using Domain.IRepos;
+using Domain.VMs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -23,17 +24,17 @@ namespace TaskAPI.Controllers
         }
 
         [HttpGet]
-        public Task<List<Student>> GetAllStudents()
+        public Task<List<StudentResource>> GetAllStudents()
         {
             return repository.GetAllStudents();
         }
         [HttpGet("{Id}")]
-        public Task<Student> GetStudent(int Id)
+        public Task<StudentResource> GetStudent(int Id)
         {
             return repository.GetStudent(Id);
         }
         [HttpPost]
-        public IActionResult AddStudent([FromBody] Student student)
+        public IActionResult AddStudent([FromBody] StudentVM student)
         {
 
             if (repository.AddStudent(student))
@@ -42,7 +43,7 @@ namespace TaskAPI.Controllers
                 return BadRequest();
         }
         [HttpPut]
-        public IActionResult UpdateStudent([FromBody] Student student)
+        public IActionResult UpdateStudent([FromBody] StudentVM student)
         {
             if (repository.UpdateStudent(student))
                 return Ok();

@@ -1,5 +1,7 @@
-﻿using Domain.Entities;
+﻿using AutoMapper;
+using Domain.Entities;
 using Domain.IRepos;
+using Domain.VMs;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -10,9 +12,7 @@ namespace TaskAPI.Controllers
     [Route("Employees")]
     public class EmployeesController : Controller
     {
-        Regex emailRegex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
-        Regex phoneRegex = new Regex(@"^[0-9]{10}$");
-
+        
         private readonly IRepository repository;
 
         public EmployeesController(IRepository repository)
@@ -20,17 +20,17 @@ namespace TaskAPI.Controllers
             this.repository = repository;
         }
         [HttpGet]
-        public Task<List<Employee>> GetAllEmployees()
+        public Task<List<EmployeeResource>> GetAllEmployees()
         {
             return repository.GetAllEmployees();
         }
         [HttpGet("{Id}")]
-        public Task<Employee> GetEmployee(int Id)
+        public Task<EmployeeResource> GetEmployee(int Id)
         {
             return repository.GetEmployee(Id);
         }
         [HttpPost]
-        public IActionResult AddEmployee([FromBody] Employee employee)
+        public IActionResult AddEmployee([FromBody] EmployeeVM employee)
         {
             if (repository.AddEmployee(employee))
                 return Ok();
@@ -38,7 +38,7 @@ namespace TaskAPI.Controllers
                 return BadRequest();
         }
         [HttpPut]
-        public IActionResult UpdateEmployee([FromBody] Employee employee)
+        public IActionResult UpdateEmployee([FromBody] EmployeeVM employee)
         {
 
             if (repository.UpdateEmployee(employee))
