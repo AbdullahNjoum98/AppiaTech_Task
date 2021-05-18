@@ -12,13 +12,15 @@ namespace Data.Configurations
     {
         public AutoMapping()
         {
-            this.CreateMap<Student, StudentResource>().ReverseMap();
-            this.CreateMap<Student, StudentVM>().ReverseMap();
-            this.CreateMap<Person, PersonResource>().ReverseMap();
-            this.CreateMap<Person, PersonVM>().ReverseMap();
-            this.CreateMap<Employee, EmployeeResource>().ReverseMap();
-            this.CreateMap<Employee, EmployeeVM>().ReverseMap();
-            this.CreateMap<Course, CourseVM>().ReverseMap();
+            this.CreateMap<Student, StudentResource>().ReverseMap().MaxDepth(3);
+            this.CreateMap<Student, StudentVM>().ReverseMap().MaxDepth(3);
+            this.CreateMap<Person, PersonResource>().ReverseMap().MaxDepth(3);
+            this.CreateMap<Person, PersonVM>().ReverseMap().MaxDepth(3);
+            this.CreateMap<Employee, EmployeeResource>().ReverseMap().MaxDepth(3);
+            this.CreateMap<Employee, EmployeeVM>().ReverseMap().MaxDepth(3);
+            this.CreateMap<Course, FavCourseVM>().ReverseMap().MaxDepth(3);
+            this.CreateMap<Course, FavCourseResource>().ReverseMap().MaxDepth(3);
+
         }
     }
 }

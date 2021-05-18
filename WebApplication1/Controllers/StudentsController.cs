@@ -7,7 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -34,29 +36,27 @@ namespace TaskAPI.Controllers
             return repository.GetStudent(Id);
         }
         [HttpPost]
-        public IActionResult AddStudent([FromBody] StudentVM student)
+        public Task<StudentResource> AddStudent([FromBody] StudentVM student)
         {
-
-            if (repository.AddStudent(student))
-                return Ok();
-            else
-                return BadRequest();
+            repository.AddStudent(student);
+            return repository.GetStudent((int)student.Id);
         }
         [HttpPut]
-        public IActionResult UpdateStudent([FromBody] StudentVM student)
+        public Task<StudentResource> UpdateStudent([FromBody] StudentVM student)
         {
-            if (repository.UpdateStudent(student))
-                return Ok();
-            else
-                return BadRequest();
+             repository.UpdateStudent(student);
+             return repository.GetStudent((int)student.Id);
         }
         [HttpDelete("{Id}")]
         public IActionResult DeleteStudent(int Id)
         {
-            if (repository.DeleteStudent(Id))
+            if (repository.DeleteStudent(Id) == null)
                 return Ok();
-            else
-                return BadRequest();
+            else {
+                string exception = HelperMethods.getException(repository.DeleteStudent(Id));
+                return BadRequest(exception);
+            }
+            }
         }
-    }
-}
+    } 
+

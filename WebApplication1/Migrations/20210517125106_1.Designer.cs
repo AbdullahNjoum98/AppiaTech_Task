@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace TaskAPI.Migrations
 {
     [DbContext(typeof(ProjectDbContext))]
-    [Migration("20210516134148_1")]
+    [Migration("20210517125106_1")]
     partial class _1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,6 +21,21 @@ namespace TaskAPI.Migrations
                 .HasAnnotation("ProductVersion", "5.0.5")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("CourseStudent", b =>
+                {
+                    b.Property<long>("StudentsId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("favCoursesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("StudentsId", "favCoursesId");
+
+                    b.HasIndex("favCoursesId");
+
+                    b.ToTable("CourseStudent");
+                });
+
             modelBuilder.Entity("Domain.Entities.Course", b =>
                 {
                     b.Property<int>("Id")
@@ -30,13 +45,20 @@ namespace TaskAPI.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<long?>("StudentId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("StudentId");
 
                     b.ToTable("Courses");
                 });
@@ -80,12 +102,34 @@ namespace TaskAPI.Migrations
                 {
                     b.HasBaseType("Domain.Entities.Person");
 
-                    b.Property<int?>("favCourseId")
+                    b.Property<int?>("CourseId")
                         .HasColumnType("int");
 
-                    b.HasIndex("favCourseId");
+                    b.HasIndex("CourseId");
 
                     b.ToTable("Students");
+                });
+
+            modelBuilder.Entity("CourseStudent", b =>
+                {
+                    b.HasOne("Domain.Entities.Student", null)
+                        .WithMany()
+                        .HasForeignKey("StudentsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Course", null)
+                        .WithMany()
+                        .HasForeignKey("favCoursesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Entities.Course", b =>
+                {
+                    b.HasOne("Domain.Entities.Student", null)
+                        .WithMany()
+                        .HasForeignKey("StudentId");
                 });
 
             modelBuilder.Entity("Domain.Entities.Employee", b =>
@@ -99,17 +143,15 @@ namespace TaskAPI.Migrations
 
             modelBuilder.Entity("Domain.Entities.Student", b =>
                 {
+                    b.HasOne("Domain.Entities.Course", null)
+                        .WithMany()
+                        .HasForeignKey("CourseId");
+
                     b.HasOne("Domain.Entities.Person", null)
                         .WithOne()
                         .HasForeignKey("Domain.Entities.Student", "Id")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
-
-                    b.HasOne("Domain.Entities.Course", "favCourse")
-                        .WithMany()
-                        .HasForeignKey("favCourseId");
-
-                    b.Navigation("favCourse");
                 });
 #pragma warning restore 612, 618
         }

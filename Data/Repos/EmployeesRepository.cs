@@ -21,32 +21,32 @@ namespace Data.Repos
             this.dbContext = dbContext;
             this._mapper = mapper;
         }
-        public bool AddEmployee(EmployeeVM employee)
+        public Exception AddEmployee(EmployeeVM employee)
         {
             try
             {
                 dbContext.Employees.Add(_mapper.Map<Employee>(employee));
-                dbContext.SaveChangesAsync();
-                return true;
+                dbContext.SaveChanges();
+                return null;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return false;
+                return ex;
             }
         }
 
 
-        public bool DeleteEmployee(int Id)
+        public Exception DeleteEmployee(int Id)
         {
             try
             {
                 var empToDelete = dbContext.Employees.Where(e=>e.Id==Id).FirstOrDefault();
                 dbContext.Employees.Remove(empToDelete);
-                dbContext.SaveChangesAsync();
-                return true;
+                dbContext.SaveChanges();
+                return null;
             }
-            catch (Exception) {
-                return false;
+            catch (Exception ex) {
+                return ex;
             }
         }
 
@@ -60,16 +60,16 @@ namespace Data.Repos
             return _mapper.Map<EmployeeResource>(await dbContext.Employees.Where(e => e.Id == Id).FirstOrDefaultAsync());
         }
 
-        public bool UpdateEmployee(EmployeeVM employee)
+        public Exception UpdateEmployee(EmployeeVM employee)
         {
             try
             {
                 dbContext.Employees.Update(_mapper.Map<Employee>(employee));
-                dbContext.SaveChangesAsync();
-                return true;
+                dbContext.SaveChanges();
+                return null;
             }
-            catch (Exception) {
-                return false;
+            catch (Exception ex) {
+                return ex;
             }
         }
     }

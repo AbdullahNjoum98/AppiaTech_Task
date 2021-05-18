@@ -14,10 +14,8 @@ namespace Domain.Entities
         [MaxLength(30)]
         public string Name { get; set; }
         [Required]
-        [RegularExpression(@" ^ ([\w\.\-] +)@([\w\-] +)((\.(\w){2, 3})+)$")]
         public string Email { get; set; }
         [Required]
-        [RegularExpression(@"^[0-9]{10}$")]
         public string Phone { get; set; }
 
     }

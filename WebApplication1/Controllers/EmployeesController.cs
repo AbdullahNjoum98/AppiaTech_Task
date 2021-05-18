@@ -30,29 +30,27 @@ namespace TaskAPI.Controllers
             return repository.GetEmployee(Id);
         }
         [HttpPost]
-        public IActionResult AddEmployee([FromBody] EmployeeVM employee)
+        public Task<EmployeeResource> AddEmployee([FromBody] EmployeeVM employee)
         {
-            if (repository.AddEmployee(employee))
-                return Ok();
-            else
-                return BadRequest();
+            repository.AddEmployee(employee);
+            return repository.GetEmployee((int)employee.Id);
         }
         [HttpPut]
-        public IActionResult UpdateEmployee([FromBody] EmployeeVM employee)
+        public Task<EmployeeResource> UpdateEmployee([FromBody] EmployeeVM employee)
         {
-
-            if (repository.UpdateEmployee(employee))
-                return Ok();
-            else
-                return BadRequest();
+            repository.UpdateEmployee(employee);
+            return repository.GetEmployee((int)employee.Id);
         }
         [HttpDelete("{Id}")]
         public IActionResult DeleteEmployee(int id)
         {
-            if (repository.DeleteEmployee(id))
+            if (repository.DeleteEmployee(id)==null)
                 return Ok();
-            else
-                return BadRequest();
+            else 
+            {
+                string exception = HelperMethods.getException(repository.DeleteEmployee(id));
+                return BadRequest(exception);
+            }
         }
     }
 }

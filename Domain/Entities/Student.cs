@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 
@@ -8,6 +9,6 @@ namespace Domain.Entities
     public class Student:Person
     {
         [Required]
-        public Course favCourse { get; set; }
+        public virtual List<Course> favCourses { get; set; }
     }
 }
