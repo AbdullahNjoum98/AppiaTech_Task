@@ -9,7 +9,6 @@ namespace Domain.VMs
 {
     public class EmployeeVM: PersonVM
     {
-        [Required]
         [Range(1000, 9999)]
         public double Salary { get; set; }
     }

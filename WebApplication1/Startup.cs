@@ -32,6 +32,8 @@ namespace WebApplication1
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMvcCore()
+         .AddDataAnnotations();
             services.AddAutoMapper(typeof(AutoMapping));
             services.AddSwaggerGen();
             services.AddCors(options =>

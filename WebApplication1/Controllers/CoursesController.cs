@@ -10,7 +10,7 @@ namespace TaskAPI.Controllers
 {
 
     [Route("Courses")]
-
+    [ApiController]
     public class CoursesController : Controller
     {
         private readonly IRepository repository;
