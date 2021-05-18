@@ -12,58 +12,61 @@ namespace Data.Repos
 {
     public partial class Repository : IRepository
     {
-        public bool AddStudent(StudentVM student)
+        public Exception AddStudent(StudentVM student)
         {
             try
             {
-                dbContext.Students.Add(_mapper.Map<Student>(student));
-                dbContext.SaveChangesAsync();
-                return true;
+                var studentMapped = _mapper.Map<Student>(student);
+                var any = dbContext.Courses.Where(e => student.favCourses.Select(e => e.Id).Contains(e.Id));
+                studentMapped.favCourses = any.ToList();
+                dbContext.Students.Add(studentMapped);
+                dbContext.SaveChanges();
+                return null;
             }
             catch (Exception ex)
             {
-                return false;
+                return ex;
             }
         }
 
 
-        public bool DeleteStudent(int Id)
+        public Exception DeleteStudent(int Id)
         {
             try
             {
-                var studentToDelete = dbContext.Students.Include(e=>e.favCourse).Where(e => e.Id == Id).FirstOrDefault();
+                var studentToDelete = dbContext.Students.Include(e=>e.favCourses).Where(e => e.Id == Id).FirstOrDefault();
                 dbContext.Students.Remove(studentToDelete);
-                dbContext.SaveChangesAsync();
-                return true;
+                dbContext.SaveChanges();
+                return null;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return false;
+                return ex;
             }
         }
 
         public async Task<List<StudentResource>> GetAllStudents()
         {
-            return _mapper.Map<List<StudentResource>>(await dbContext.Students.Include(e=>e.favCourse).ToListAsync());
+            return _mapper.Map<List<StudentResource>>(await dbContext.Students.Include(e=>e.favCourses).ToListAsync());
         }
 
         public async Task<StudentResource> GetStudent(int Id)
         {
-            return _mapper.Map<StudentResource>(await dbContext.Students.Include(e=>e.favCourse).Where(e => e.Id == Id).FirstOrDefaultAsync());
+            return _mapper.Map<StudentResource>(await dbContext.Students.Include(e=>e.favCourses).Where(e => e.Id == Id).FirstOrDefaultAsync());
 
         }
 
-        public bool UpdateStudent(StudentVM student)
+        public Exception UpdateStudent(StudentVM student)
         {
             try
             {
                 dbContext.Students.Update(_mapper.Map<Student>(student));
-                dbContext.SaveChangesAsync();
-                return true;
+                dbContext.SaveChanges();
+                return null;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return false;
+                return ex;
             }
         }
     }

@@ -10,6 +10,6 @@ namespace Domain.VMs
     public class StudentVM:PersonVM
     {
         [Required]
-        public CourseVM favCourse { get; set; }
+        public List<FavCourseVM> favCourses { get; set; }
     }
 }
