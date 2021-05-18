@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 namespace TaskAPI.Controllers
 {
     [Route("Employees")]
+    [ApiController]
     public class EmployeesController : Controller
     {
         

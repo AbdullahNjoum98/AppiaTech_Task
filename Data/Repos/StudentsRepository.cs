@@ -16,10 +16,15 @@ namespace Data.Repos
         {
             try
             {
-                var studentMapped = _mapper.Map<Student>(student);
-                var any = dbContext.Courses.Where(e => student.favCourses.Select(e => e.Id).Contains(e.Id));
-                studentMapped.favCourses = any.ToList();
-                dbContext.Students.Add(studentMapped);
+                var courses = dbContext.Courses.Where(e => student.favCourses.Contains(e.Id)).ToList();
+                Student studentToAdd = new Student
+                {
+                    Name = student.Name,
+                    Email = student.Email,
+                    Phone = student.Phone,
+                    favCourses = courses
+                };
+                dbContext.Students.Add(studentToAdd);
                 dbContext.SaveChanges();
                 return null;
             }
@@ -60,7 +65,16 @@ namespace Data.Repos
         {
             try
             {
-                dbContext.Students.Update(_mapper.Map<Student>(student));
+                var courses = dbContext.Courses.Where(e => student.favCourses.Contains(e.Id)).ToList();
+                Student studentToAdd = new Student
+                {
+                    Id=student.Id,
+                    Name = student.Name,
+                    Email = student.Email,
+                    Phone = student.Phone,
+                    favCourses = courses
+                };
+                dbContext.Students.Update(studentToAdd);
                 dbContext.SaveChanges();
                 return null;
             }

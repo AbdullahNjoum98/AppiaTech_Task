@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 namespace TaskAPI.Controllers
 {
     [Route("Students")]
+    [ApiController]
     public class StudentsController : Controller
     {
         private readonly IRepository repository;
