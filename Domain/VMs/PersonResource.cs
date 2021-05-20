@@ -15,7 +15,7 @@ namespace Domain.VMs
         [MaxLength(30)]
         public string Name { get; set; }
         [Required]
-        [RegularExpression(@" ^ ([\w\.\-] +)@([\w\-] +)((\.(\w){2, 3})+)$")]
+        [RegularExpression(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,})+)$")]
         [MaxLength(50)]
         public string Email { get; set; }
         [Required]

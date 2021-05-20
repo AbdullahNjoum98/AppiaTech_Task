@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{982F036A-B5E0-4F08-BB07-D60403B02E0C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskAPI", "WebApplication1\TaskAPI.csproj", "{1F63D4CA-112B-4370-84FA-F96D767D9660}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskAPI", "WebApplication1\TaskAPI.csproj", "{1F63D4CA-112B-4370-84FA-F96D767D9660}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Consumer", "Producer\Consumer.csproj", "{8C8B0D69-4795-4A9F-B92E-0E794BB3C890}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{1F63D4CA-112B-4370-84FA-F96D767D9660}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F63D4CA-112B-4370-84FA-F96D767D9660}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F63D4CA-112B-4370-84FA-F96D767D9660}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C8B0D69-4795-4A9F-B92E-0E794BB3C890}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C8B0D69-4795-4A9F-B92E-0E794BB3C890}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C8B0D69-4795-4A9F-B92E-0E794BB3C890}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C8B0D69-4795-4A9F-B92E-0E794BB3C890}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

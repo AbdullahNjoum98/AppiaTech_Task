@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
+using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -39,6 +41,9 @@ namespace TaskAPI.Controllers
         [HttpPost]
         public Task<StudentResource> AddStudent([FromBody] StudentVM student)
         {
+            var jsonString=JsonSerializer.Serialize(student);
+            var bytesObject=Encoding.UTF8.GetBytes(jsonString);
+            HelperMethods.Producer(bytesObject);
             repository.AddStudent(student);
             return repository.GetStudent((int)student.Id);
         }
