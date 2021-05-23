@@ -27,7 +27,7 @@ namespace TaskAPI
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
             {
-                channel.QueueDeclare(queue: "hello",
+                channel.QueueDeclare(queue: josnObject.GetType().Name,
                                      durable: false,
                                      exclusive: false,
                                      autoDelete: false,
