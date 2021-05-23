@@ -16,21 +16,21 @@ namespace Consumer
     {
         private readonly ProjectDbContext dBContext;
         private readonly IMapper mapper;
-        private readonly ServiceProvider provider;
+        //private readonly ServiceProvider provider;
 
 
-        public TeacherServices(ServiceProvider serviceProvider)//ProjectDbContext dBContext, IMapper mapper)
+        public TeacherServices(ProjectDbContext dBContext, IMapper mapper)
         {
-            //this.dBContext = dBContext;
-            //this.mapper = mapper;
+            this.dBContext = dBContext;
+            this.mapper = mapper;
         }
         public Exception AddTeacher(TeacherVM teacher)
         {
-            var dbContext=provider.GetService<ProjectDbContext>();
+            //var dbContext=provider.GetService<ProjectDbContext>();
             try
             {
-                dbContext.Teachers.Add(mapper.Map<Teacher>(teacher));
-                dbContext.SaveChanges();
+                dBContext.Teachers.Add(mapper.Map<Teacher>(teacher));
+                dBContext.SaveChanges();
                 return null;
             }
             catch (Exception ex)

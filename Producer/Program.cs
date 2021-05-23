@@ -19,11 +19,12 @@ namespace Consumer
     {
         static void Main(string[] args)
         {
-            string Connection = "Server=.\\SQLEXPRESS;Database=Task_DB;Trusted_Connection=True;";
+            string Connection = "Server=.;Database=Task_DB;Trusted_Connection=True;";
             var serviceProvider = new ServiceCollection()
                 .AddDbContext<ProjectDbContext>(options =>
                 options.UseSqlServer(Connection))
                 .AddAutoMapper(typeof(AutoMapping))
+                .AddScoped<TeacherServices>()
                 .BuildServiceProvider();
             var teacherServices = serviceProvider.GetService<TeacherServices>();
             var factory = new ConnectionFactory() { HostName = "localhost" };
@@ -42,8 +43,8 @@ namespace Consumer
                     var body = ea.Body.ToArray();
                     string jsonString = Encoding.UTF8.GetString(body);
                     var teacher = JsonConvert.DeserializeObject<TeacherVM>(jsonString);
-                    TeacherServices teacherServices1 = new TeacherServices(serviceProvider);
-                    teacherServices1.AddTeacher(teacher);
+                    //TeacherServices teacherServices1 = new TeacherServices(serviceProvider);
+                    teacherServices.AddTeacher(teacher);
                     //teacherServices.AddTeacher(teacher);
                 };
                 channel.BasicConsume(queue: "TeacherVM",

@@ -20,7 +20,8 @@ namespace Data.Configurations
             this.CreateMap<Employee, EmployeeVM>().ReverseMap().MaxDepth(3);
             this.CreateMap<Course, FavCourseVM>().ReverseMap().MaxDepth(3);
             this.CreateMap<Course, FavCourseResource>().ReverseMap().MaxDepth(3);
-
+            this.CreateMap<Teacher, TeacherReource>().ReverseMap().MaxDepth(3);
+            this.CreateMap<Teacher, TeacherVM>().ReverseMap().MaxDepth(3);
         }
     }
 }
