@@ -11,5 +11,7 @@ namespace Domain.VMs
     {
         [Required]
         public List<int> favCourses { get; set; }
+        public int teacher { get; set; }
+
     }
 }

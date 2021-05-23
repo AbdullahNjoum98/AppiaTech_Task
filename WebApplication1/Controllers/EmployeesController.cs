@@ -33,24 +33,30 @@ namespace TaskAPI.Controllers
         [HttpPost]
         public Task<EmployeeResource> AddEmployee([FromBody] EmployeeVM employee)
         {
-            repository.AddEmployee(employee);
-            return repository.GetEmployee((int)employee.Id);
+            var Id = repository.AddEmployee(employee);
+            if (Id != 0)
+                return repository.GetEmployee((int)employee.Id);
+            else
+                return null;
         }
         [HttpPut]
         public Task<EmployeeResource> UpdateEmployee([FromBody] EmployeeVM employee)
         {
-            repository.UpdateEmployee(employee);
-            return repository.GetEmployee((int)employee.Id);
+            var exception = repository.UpdateEmployee(employee);
+            if (exception == null)
+                return repository.GetEmployee((int)employee.Id);
+            else
+                return null;
         }
         [HttpDelete("{Id}")]
         public IActionResult DeleteEmployee(int id)
         {
-            if (repository.DeleteEmployee(id)==null)
+            var exception = repository.DeleteEmployee(id);
+            if (exception == null)
                 return Ok();
             else 
             {
-                string exception = HelperMethods.getException(repository.DeleteEmployee(id));
-                return BadRequest(exception);
+                return BadRequest(HelperMethods.getException(exception));
             }
         }
     }

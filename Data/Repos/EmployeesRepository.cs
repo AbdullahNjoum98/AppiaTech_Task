@@ -21,17 +21,18 @@ namespace Data.Repos
             this.dbContext = dbContext;
             this._mapper = mapper;
         }
-        public Exception AddEmployee(EmployeeVM employee)
+        public long AddEmployee(EmployeeVM employee)
         {
             try
             {
-                dbContext.Employees.Add(_mapper.Map<Employee>(employee));
+                var entity = _mapper.Map<Employee>(employee);
+                dbContext.Employees.Add(entity);
                 dbContext.SaveChanges();
-                return null;
+                return entity.Id;
             }
             catch (Exception ex)
             {
-                return ex;
+                return 0;
             }
         }
 

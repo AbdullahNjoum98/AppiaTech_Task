@@ -14,17 +14,18 @@ namespace Data.Repos
 {
     public partial class Repository : IRepository
     {
-        public Exception AddCourse(FavCourseVM course)
+        public int AddCourse(FavCourseVM course)
         {
             try
             {
-                dbContext.Courses.Add(_mapper.Map<Course>(course));
+                var entity = _mapper.Map<Course>(course);
+                dbContext.Courses.Add(entity);
                 dbContext.SaveChanges();
-                return null;
+                return entity.Id;
             }
             catch (Exception ex)
             {
-                return ex;
+                return 0;
             }
         }
 

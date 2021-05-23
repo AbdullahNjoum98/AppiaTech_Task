@@ -32,24 +32,30 @@ namespace TaskAPI.Controllers
         [HttpPost]
         public Task<FavCourseResource> AddCourse([FromBody] FavCourseVM course)
         {
-            repository.AddCourse(course);
-            return repository.GetCourse((int)course.Id);
+            var Id = repository.AddCourse(course);
+            if (Id != 0)
+                return repository.GetCourse((int)course.Id);
+            else
+                return null;
         }
         [HttpPut]
         public Task<FavCourseResource> UpdateCourse([FromBody] FavCourseVM course)
         {
-            repository.UpdateCourse(course);
-            return repository.GetCourse((int)course.Id);
+            Exception excepton = repository.UpdateCourse(course);
+            if (excepton == null)
+                return repository.GetCourse((int)course.Id);
+            else
+                return null;
         }
         [HttpDelete("{Id}")]
         public IActionResult DeleteCourse(int id)
         {
-            if (repository.DeleteCourse(id) == null)
+            Exception exception = repository.DeleteCourse(id);
+            if ( exception == null)
                 return Ok();
             else
             {
-                string exception=HelperMethods.getException(repository.DeleteCourse(id));
-                return BadRequest(exception);
+                return BadRequest(HelperMethods.getException(exception));
             }
         }
     }

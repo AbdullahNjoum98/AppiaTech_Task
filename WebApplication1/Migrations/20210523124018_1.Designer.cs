@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace TaskAPI.Migrations
 {
     [DbContext(typeof(ProjectDbContext))]
-    [Migration("20210523055952_3")]
-    partial class _3
+    [Migration("20210523124018_1")]
+    partial class _1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -85,9 +85,7 @@ namespace TaskAPI.Migrations
             modelBuilder.Entity("Domain.Entities.Teacher", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
 
                     b.Property<string>("Degree")
                         .IsRequired()

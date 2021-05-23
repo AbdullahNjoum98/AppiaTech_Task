@@ -39,30 +39,36 @@ namespace TaskAPI.Controllers
             return repository.GetStudent(Id);
         }
         [HttpPost]
-        public Task<StudentResource> AddStudent([FromBody] StudentVM student)
+        public async Task<StudentResource> AddStudent([FromBody] StudentVM student)
         {
-            var jsonString=JsonSerializer.Serialize(student);
-            var bytesObject=Encoding.UTF8.GetBytes(jsonString);
-            HelperMethods.Producer(bytesObject);
-            repository.AddStudent(student);
-            return repository.GetStudent((int)student.Id);
+            var id = repository.AddStudent(student);
+            if(id != 0)
+            {
+                var newStudent= await repository.GetStudent((int)id);
+                return newStudent;
+            }
+            else
+                return null;
+
         }
         [HttpPut]
         public Task<StudentResource> UpdateStudent([FromBody] StudentVM student)
         {
-             repository.UpdateStudent(student);
-             return repository.GetStudent((int)student.Id);
+             var exception = repository.UpdateStudent(student);
+            if (exception == null)
+                return repository.GetStudent((int)student.Id);
+            else
+                return null;
         }
         [HttpDelete("{Id}")]
         public IActionResult DeleteStudent(int Id)
         {
-            if (repository.DeleteStudent(Id) == null)
+            var exception = repository.DeleteStudent(Id);
+            if (exception == null)
                 return Ok();
-            else {
-                string exception = HelperMethods.getException(repository.DeleteStudent(Id));
-                return BadRequest(exception);
-            }
-            }
+            else 
+                return BadRequest(HelperMethods.getException(exception));
         }
+      }
     } 
 

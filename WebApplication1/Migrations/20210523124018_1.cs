@@ -7,6 +7,20 @@ namespace TaskAPI.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Courses",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Code = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Courses", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "People",
                 columns: table => new
                 {
@@ -19,6 +33,19 @@ namespace TaskAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_People", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Teachers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    Degree = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Teachers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -40,23 +67,11 @@ namespace TaskAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CourseStudent",
-                columns: table => new
-                {
-                    StudentsId = table.Column<long>(type: "bigint", nullable: false),
-                    favCoursesId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CourseStudent", x => new { x.StudentsId, x.favCoursesId });
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Students",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false),
-                    CourseId = table.Column<int>(type: "int", nullable: true)
+                    TeacherId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -67,33 +82,37 @@ namespace TaskAPI.Migrations
                         principalTable: "People",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Students_Teachers_TeacherId",
+                        column: x => x.TeacherId,
+                        principalTable: "Teachers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Courses",
+                name: "CourseStudent",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Code = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    StudentId = table.Column<long>(type: "bigint", nullable: true)
+                    StudentsId = table.Column<long>(type: "bigint", nullable: false),
+                    favCoursesId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Courses", x => x.Id);
+                    table.PrimaryKey("PK_CourseStudent", x => new { x.StudentsId, x.favCoursesId });
                     table.ForeignKey(
-                        name: "FK_Courses_Students_StudentId",
-                        column: x => x.StudentId,
+                        name: "FK_CourseStudent_Courses_favCoursesId",
+                        column: x => x.favCoursesId,
+                        principalTable: "Courses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CourseStudent_Students_StudentsId",
+                        column: x => x.StudentsId,
                         principalTable: "Students",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Courses_StudentId",
-                table: "Courses",
-                column: "StudentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CourseStudent_favCoursesId",
@@ -101,41 +120,13 @@ namespace TaskAPI.Migrations
                 column: "favCoursesId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Students_CourseId",
+                name: "IX_Students_TeacherId",
                 table: "Students",
-                column: "CourseId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_CourseStudent_Courses_favCoursesId",
-                table: "CourseStudent",
-                column: "favCoursesId",
-                principalTable: "Courses",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_CourseStudent_Students_StudentsId",
-                table: "CourseStudent",
-                column: "StudentsId",
-                principalTable: "Students",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Students_Courses_CourseId",
-                table: "Students",
-                column: "CourseId",
-                principalTable: "Courses",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+                column: "TeacherId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Courses_Students_StudentId",
-                table: "Courses");
-
             migrationBuilder.DropTable(
                 name: "CourseStudent");
 
@@ -143,13 +134,16 @@ namespace TaskAPI.Migrations
                 name: "Employees");
 
             migrationBuilder.DropTable(
-                name: "Students");
-
-            migrationBuilder.DropTable(
                 name: "Courses");
 
             migrationBuilder.DropTable(
+                name: "Students");
+
+            migrationBuilder.DropTable(
                 name: "People");
+
+            migrationBuilder.DropTable(
+                name: "Teachers");
         }
     }
 }

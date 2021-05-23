@@ -12,25 +12,28 @@ namespace Data.Repos
 {
     public partial class Repository : IRepository
     {
-        public Exception AddStudent(StudentVM student)
+        public long AddStudent(StudentVM student)
         {
             try
             {
                 var courses = dbContext.Courses.Where(e => student.favCourses.Contains(e.Id)).ToList();
+                var teacher = dbContext.Teachers.Where(e => student.teacher==e.Id).FirstOrDefault();
+
                 Student studentToAdd = new Student
                 {
                     Name = student.Name,
                     Email = student.Email,
                     Phone = student.Phone,
-                    favCourses = courses
+                    favCourses = courses,
+                    Teacher=teacher,
                 };
                 dbContext.Students.Add(studentToAdd);
                 dbContext.SaveChanges();
-                return null;
+                return studentToAdd.Id;
             }
             catch (Exception ex)
             {
-                return ex;
+                return 0;
             }
         }
 
@@ -39,7 +42,7 @@ namespace Data.Repos
         {
             try
             {
-                var studentToDelete = dbContext.Students.Include(e=>e.favCourses).Where(e => e.Id == Id).FirstOrDefault();
+                var studentToDelete = dbContext.Students.Include(e=>e.favCourses).Include(e => e.Teacher).Where(e => e.Id == Id).FirstOrDefault();
                 dbContext.Students.Remove(studentToDelete);
                 dbContext.SaveChanges();
                 return null;
@@ -52,12 +55,12 @@ namespace Data.Repos
 
         public async Task<List<StudentResource>> GetAllStudents()
         {
-            return _mapper.Map<List<StudentResource>>(await dbContext.Students.Include(e=>e.favCourses).ToListAsync());
+            return _mapper.Map<List<StudentResource>>(await dbContext.Students.Include(e=>e.favCourses).Include(e=>e.Teacher).ToListAsync());
         }
 
         public async Task<StudentResource> GetStudent(int Id)
         {
-            return _mapper.Map<StudentResource>(await dbContext.Students.Include(e=>e.favCourses).Where(e => e.Id == Id).FirstOrDefaultAsync());
+            return _mapper.Map<StudentResource>(await dbContext.Students.Include(e=>e.favCourses).Include(e => e.Teacher).Where(e => e.Id == Id).FirstOrDefaultAsync());
 
         }
 
@@ -66,14 +69,18 @@ namespace Data.Repos
             try
             {
                 var courses = dbContext.Courses.Where(e => student.favCourses.Contains(e.Id)).ToList();
+                var teacher = dbContext.Teachers.Where(e => student.teacher == e.Id).FirstOrDefault();
                 Student studentToAdd = new Student
                 {
                     Id=student.Id,
                     Name = student.Name,
                     Email = student.Email,
                     Phone = student.Phone,
-                    favCourses = courses
+                    favCourses = courses,
+                    Teacher=teacher
                 };
+                //dbContext.Entry(studentToAdd).CurrentValues.SetValues(studentToAdd);
+
                 dbContext.Students.Update(studentToAdd);
                 dbContext.SaveChanges();
                 return null;
