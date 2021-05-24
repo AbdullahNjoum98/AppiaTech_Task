@@ -46,11 +46,10 @@ namespace TaskAPI
             if (list.Count == 0 || list == null || item == null) return false;
             foreach (var listItem in list)
             {
-                if (
-                    listItem.GetType().GetProperty("Id") == item.GetType().GetProperty("Id")
-                    )
+                var x = listItem.GetType().GetProperty("Id").GetValue(listItem);
+                var y = item.GetType().GetProperty("Id").GetValue(item);
+                if ((int)x == (int)y)
                     return true;
-
             }
             return false;
         }

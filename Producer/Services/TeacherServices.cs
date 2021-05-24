@@ -31,34 +31,39 @@ namespace Consumer
         {
             var originalTeachers = mapper.Map<List<Teacher>>(await this.GetAllTeachers());
             List<Teacher> currentTeachers = new List<Teacher>();
+
+            currentTeachers = await dBContext.Teachers.ToListAsync();
+            List<Teacher> teachersToAdd = new List<Teacher>();
+
+            List<Teacher> teachersToUpdate = new List<Teacher>();
+
+            List<Teacher> teachersToDelete = new List<Teacher>();
+
+            foreach (var originalTeacher in originalTeachers)
+            {
+                if (currentTeachers.Count == 0)
+                {
+                    teachersToAdd.Add(originalTeacher);
+                }
+                foreach (var currentTeacher in currentTeachers)
+                {
+                    if (currentTeacher.Id == originalTeacher.Id && (
+                        currentTeacher.Name != originalTeacher.Name ||
+                        currentTeacher.Degree != originalTeacher.Degree
+                        ))
+                        teachersToUpdate.Add(originalTeacher);
+
+                    else if (!HelperMethods.CustomContains(originalTeachers, currentTeacher) &&
+                            !HelperMethods.CustomContains(teachersToDelete, currentTeacher))
+                        teachersToDelete.Add(currentTeacher);
+
+                    else if (!HelperMethods.CustomContains(currentTeachers, originalTeacher) &&
+                            !HelperMethods.CustomContains(teachersToAdd, originalTeacher))
+                        teachersToAdd.Add(originalTeacher);
+                }
+            }
             using (var db = dBContext)
             {
-                currentTeachers = await db.Teachers.ToListAsync();
-                List<Teacher> teachersToAdd = new List<Teacher>();
-
-                List<Teacher> teachersToUpdate = new List<Teacher>();
-
-                List<Teacher> teachersToDelete = new List<Teacher>();
-
-                foreach (var originalTeacher in originalTeachers)
-                {
-                    foreach (var currentTeacher in currentTeachers)
-                    {
-                        if (currentTeacher.Id == originalTeacher.Id && (
-                            currentTeacher.Name != originalTeacher.Name ||
-                            currentTeacher.Degree != originalTeacher.Degree
-                            ))
-                            teachersToUpdate.Add(originalTeacher);
-
-                        else if (!HelperMethods.CustomContains(originalTeachers, currentTeacher) &&
-                                !HelperMethods.CustomContains(teachersToDelete, currentTeacher))
-                            teachersToDelete.Add(currentTeacher);
-
-                        else if (!HelperMethods.CustomContains(currentTeachers, originalTeacher) &&
-                                !HelperMethods.CustomContains(teachersToAdd, originalTeacher))
-                            teachersToAdd.Add(originalTeacher);
-                    }
-                }
                 //TEACHERS TO ADD
                 await db.Teachers.BulkInsertAsync(teachersToAdd);
                 //TEACHER TO UPDATE
