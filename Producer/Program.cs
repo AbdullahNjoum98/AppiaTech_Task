@@ -29,8 +29,8 @@ namespace Consumer
                 .AddScoped<TeacherServices>()
                 .BuildServiceProvider();
 
-
             var teacherServices = serviceProvider.GetService<TeacherServices>();
+
             var factory = new ConnectionFactory() { HostName = "localhost" };
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
@@ -62,7 +62,6 @@ namespace Consumer
                                      autoAck: true,
                                      consumer: consumer);
                 /////////////////////////////////////////////////////
-                ///
                 channel.QueueDeclare(queue: "Harvest",
                                      durable: false,
                                      exclusive: false,
