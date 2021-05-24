@@ -80,8 +80,9 @@ namespace Data.Repos
                     Teacher=teacher
                 };
                 //dbContext.Entry(studentToAdd).CurrentValues.SetValues(studentToAdd);
-
-                dbContext.Students.Update(studentToAdd);
+                var entity = dbContext.Students.Where(e => e.Id == studentToAdd.Id).FirstOrDefault();
+                dbContext.Students.Remove(entity);
+                dbContext.Students.Add(studentToAdd);
                 dbContext.SaveChanges();
                 return null;
             }

@@ -164,7 +164,9 @@ namespace Consumer
                     var item = await reader.ReadToEndAsync();
                     josnObject = JsonConvert.DeserializeObject<TeacherVM>(item);
                 }
-                dBContext.Teachers.Update(mapper.Map<Teacher>(josnObject));
+                var entity =  mapper.Map<Teacher>(await dBContext.Teachers.Where(e=>e.Id == josnObject.Id).FirstOrDefaultAsync());
+                dBContext.Teachers.Remove(entity);
+                await dBContext.AddAsync(mapper.Map<Teacher>(josnObject));
                 dBContext.SaveChanges();
                 return null;
             }
