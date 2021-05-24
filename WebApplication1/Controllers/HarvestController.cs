@@ -11,10 +11,7 @@ namespace TaskAPI.Controllers
     public class HarvestController : Controller
     {
         [HttpGet]
-        public void Harvest()
-        
-        
-        
+        public void Harvest()        
         {
             var factory = new ConnectionFactory() { HostName = "localhost" };
             using (var connection = factory.CreateConnection())
