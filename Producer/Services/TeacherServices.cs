@@ -12,6 +12,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using TaskAPI;
 
 namespace Consumer
 {
@@ -29,24 +30,48 @@ namespace Consumer
         public async Task Harvest()
         {
             var originalTeachers = mapper.Map<List<Teacher>>(await this.GetAllTeachers());
-            var currentTeachers = await dBContext.Teachers.ToListAsync();
-
-            var teachersToAdd = originalTeachers.Except(currentTeachers).ToList();
-            await dBContext.Teachers.BulkInsertAsync(teachersToAdd);
-
-            List<Teacher> teachersToUpdate = new List<Teacher>();
-            foreach(var originalTeacher in originalTeachers)
+            List<Teacher> currentTeachers = new List<Teacher>();
+            using (var db = dBContext)
             {
-                foreach(var currentTeacher in currentTeachers)
+                currentTeachers = await db.Teachers.ToListAsync();
+                List<Teacher> teachersToAdd = new List<Teacher>();
+
+                List<Teacher> teachersToUpdate = new List<Teacher>();
+
+                List<Teacher> teachersToDelete = new List<Teacher>();
+
+                foreach (var originalTeacher in originalTeachers)
                 {
-                    if(currentTeacher.Id == originalTeacher.Id)
+                    foreach (var currentTeacher in currentTeachers)
                     {
-                        teachersToUpdate.Add(originalTeacher);
+                        if (currentTeacher.Id == originalTeacher.Id && (
+                            currentTeacher.Name != originalTeacher.Name ||
+                            currentTeacher.Degree != originalTeacher.Degree
+                            ))
+                            teachersToUpdate.Add(originalTeacher);
+
+                        else if (!HelperMethods.CustomContains(originalTeachers, currentTeacher) &&
+                                !HelperMethods.CustomContains(teachersToDelete, currentTeacher))
+                            teachersToDelete.Add(currentTeacher);
+
+                        else if (!HelperMethods.CustomContains(currentTeachers, originalTeacher) &&
+                                !HelperMethods.CustomContains(teachersToAdd, originalTeacher))
+                            teachersToAdd.Add(originalTeacher);
                     }
                 }
+                //TEACHERS TO ADD
+                await db.Teachers.BulkInsertAsync(teachersToAdd);
+                //TEACHER TO UPDATE
+                foreach (var item in teachersToUpdate)
+                {
+                    var itemToRemove = db.Teachers.Where(x => x.Id == item.Id).FirstOrDefault();
+                    db.Teachers.Remove(itemToRemove);
+                    db.Teachers.Add(item);
+                }
+                //TEACHERS TO DELETE
+                db.Teachers.RemoveRange(teachersToDelete);
+                db.SaveChanges();
             }
-            dBContext.Teachers.UpdateRange(mapper.Map<List<Teacher>>(teachersToUpdate));
-            dBContext.SaveChanges();
         }
         public async Task<Exception> AddTeacher(int teacherId)
         {
@@ -61,7 +86,7 @@ namespace Consumer
                 using (Stream stream = response.GetResponseStream())
                 using (StreamReader reader = new StreamReader(stream))
                 {
-                    var item=await reader.ReadToEndAsync();
+                    var item = await reader.ReadToEndAsync();
                     josnObject = JsonConvert.DeserializeObject<TeacherVM>(item);
                 }
                 dBContext.Teachers.Add(mapper.Map<Teacher>(josnObject));

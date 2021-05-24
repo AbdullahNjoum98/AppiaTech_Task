@@ -1,4 +1,5 @@
-﻿using Domain.VMs;
+﻿using Domain.Entities;
+using Domain.VMs;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using System;
@@ -12,15 +13,17 @@ namespace TaskAPI
 {
     public static class HelperMethods
     {
-        public static string getException(Exception exception) {
-            string formattedException=exception.Message;
+        public static string getException(Exception exception)
+        {
+            string formattedException = exception.Message;
             if (exception.InnerException != null)
             {
-                formattedException+= getException(exception.InnerException);
+                formattedException += getException(exception.InnerException);
             }
             return formattedException;
         }
-        public static void Producer(byte[] bytesObject) {
+        public static void Producer(byte[] bytesObject)
+        {
             var factory = new ConnectionFactory() { HostName = "localhost" };
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
@@ -37,6 +40,19 @@ namespace TaskAPI
                                      basicProperties: null,
                                      body: body);
             }
+        }
+        public static bool CustomContains<T>(List<T> list, T item)
+        {
+            if (list.Count == 0 || list == null || item == null) return false;
+            foreach (var listItem in list)
+            {
+                if (
+                    listItem.GetType().GetProperty("Id") == item.GetType().GetProperty("Id")
+                    )
+                    return true;
+
+            }
+            return false;
         }
     }
 }
