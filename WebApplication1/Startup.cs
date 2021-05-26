@@ -17,6 +17,7 @@ using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using Task_API.ServicesConfig;
+using TaskAPI;
 
 namespace WebApplication1
 {
@@ -43,6 +44,7 @@ namespace WebApplication1
             });
             services.AddConnection(Configuration);
             services.AddScoped<IRepository, Repository>();
+            services.AddElasticsearch(Configuration);
             services.AddControllers();
         }
 

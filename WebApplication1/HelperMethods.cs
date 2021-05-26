@@ -1,5 +1,8 @@
 ﻿using Domain.Entities;
 using Domain.VMs;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Nest;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using System;
@@ -43,7 +46,7 @@ namespace TaskAPI
         }
         public static bool CustomContains<T>(List<T> list, T item)
         {
-            if (list.Count == 0 || list == null || item == null) return false;
+            if ( list == null || list.Count == 0 || item == null) return false;
             foreach (var listItem in list)
             {
                 if ((int)listItem.GetType().GetProperty("Id").GetValue(listItem) ==
@@ -51,6 +54,37 @@ namespace TaskAPI
                     return true;
             }
             return false;
+        }
+        public static void AddElasticsearch(this IServiceCollection services, IConfiguration configuration)
+        {
+            var url = configuration["elasticsearch:url"];
+            var defaultIndex = configuration["elasticsearch:index"];
+
+            var settings = new ConnectionSettings(new Uri(url))
+                .DefaultIndex(defaultIndex);
+
+            AddDefaultMappings(settings);
+
+            var client = new ElasticClient(settings);
+
+            services.AddSingleton(client);
+
+            CreateIndex(client, defaultIndex);
+        }
+
+        private static void AddDefaultMappings(ConnectionSettings settings)
+        {
+            settings
+                .DefaultMappingFor<Student>(m => m
+                .Ignore(p => p.TeacherId)
+            );
+        }
+
+        private static void CreateIndex(IElasticClient client, string indexName)
+        {
+            var createIndexResponse = client.Indices.Create(indexName,
+                index => index.Map<Student>(x => x.AutoMap())
+            );
         }
     }
 }
