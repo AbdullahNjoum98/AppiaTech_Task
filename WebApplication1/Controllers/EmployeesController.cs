@@ -1,11 +1,9 @@
-﻿using AutoMapper;
-using Domain.Entities;
-using Domain.IRepos;
-using Domain.VMs;
+﻿using Domain.IRepos;
+using Cotracts.VMs;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Domain;
 
 namespace TaskAPI.Controllers
 {
@@ -14,46 +12,42 @@ namespace TaskAPI.Controllers
     public class EmployeesController : Controller
     {
         
-        private readonly IRepository repository;
+        private readonly IManager manager;
 
-        public EmployeesController(IRepository repository)
+        public EmployeesController(IManager manager)
         {
-            this.repository = repository;
+            this.manager = manager;
         }
         [HttpGet]
-        public Task<List<EmployeeResource>> GetAllEmployees()
+        public async Task<IActionResult> GetAllEmployees()
         {
-            return repository.GetAllEmployees();
+            var emps = await manager.GetAllEmployees();
+            return Ok(emps);
         }
         [HttpGet("{Id}")]
-        public Task<EmployeeResource> GetEmployee(int Id)
+        public async Task<IActionResult> GetEmployee(int Id)
         {
-            return repository.GetEmployee(Id);
+            var emp = await manager.GetEmployee(Id);
+            return Ok(emp);
         }
         [HttpPost]
-        public Task<EmployeeResource> AddEmployee([FromBody] EmployeeVM employee)
+        public async Task<IActionResult> AddEmployee([FromBody] EmployeeVM employee)
         {
-            var Id = repository.AddEmployee(employee);
-            if (Id != 0)
-                return repository.GetEmployee((int)employee.Id);
-            else
-                return null;
+            var emp = await manager.AddEmployee(employee);
+            return Ok(emp);
         }
         [HttpPut]
-        public Task<EmployeeResource> UpdateEmployee([FromBody] EmployeeVM employee)
+        public async Task<IActionResult> UpdateEmployee([FromBody] EmployeeVM employee)
         {
-            var exception = repository.UpdateEmployee(employee);
-            if (exception == null)
-                return repository.GetEmployee((int)employee.Id);
-            else
-                return null;
+            var emp = await manager.UpdateEmployee(employee);
+            return Ok(emp);
         }
         [HttpDelete("{Id}")]
-        public IActionResult DeleteEmployee(int id)
+        public async Task<IActionResult> DeleteEmployee(int id)
         {
-            var exception = repository.DeleteEmployee(id);
+            var exception = await manager.DeleteEmployee(id);
             if (exception == null)
-                return Ok();
+                return NoContent();
             else 
             {
                 return BadRequest(HelperMethods.getException(exception));

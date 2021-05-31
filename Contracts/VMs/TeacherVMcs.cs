@@ -5,19 +5,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.VMs
+namespace Cotracts.VMs
 {
-    public class FavCourseResource
+    public class TeacherVM
     {
         public int Id { get; set; }
-        [Required]
-        [MinLength(3)]
-        [MaxLength(10)]
-        public string Code { get; set; }
-        [Required]
-        [MinLength(5)]
         [MaxLength(30)]
+        [MinLength(5)]
+        [Required]
         public string Name { get; set; }
+        [MaxLength(20)]
+        [MinLength(3)]
+        [Required]
+        public string Degree { get; set; }
 
     }
 }

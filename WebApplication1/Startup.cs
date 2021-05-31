@@ -1,7 +1,9 @@
 using Data;
 using Data.Configurations;
 using Data.Repos;
+using Domain;
 using Domain.IRepos;
+using Domain.Managers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -33,7 +35,7 @@ namespace WebApplication1
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAutoMapper(typeof(AutoMapping));
+            //services.AddAutoMapper(typeof(AutoMapping));
             services.AddSwaggerGen();
             services.AddCors(options =>
             {
@@ -43,6 +45,7 @@ namespace WebApplication1
                     .AllowAnyHeader());
             });
             services.AddConnection(Configuration);
+            services.AddScoped<IManager, Manager>();
             services.AddScoped<IRepository, Repository>();
             services.AddElasticsearch(Configuration);
             services.AddControllers();

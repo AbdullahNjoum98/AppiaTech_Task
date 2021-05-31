@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Domain.Entities;
 using Domain.IRepos;
-using Domain.VMs;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -14,21 +13,18 @@ namespace Data.Repos
     public partial class Repository : IRepository
     {
         private readonly ProjectDbContext dbContext;
-        private readonly IMapper _mapper;
 
-        public Repository(ProjectDbContext dbContext, IMapper mapper)
+        public Repository(ProjectDbContext dbContext)
         {
             this.dbContext = dbContext;
-            this._mapper = mapper;
         }
-        public long AddEmployee(EmployeeVM employee)
+        public async Task<long> AddEmployee(Employee employee)
         {
             try
             {
-                var entity = _mapper.Map<Employee>(employee);
-                dbContext.Employees.Add(entity);
-                dbContext.SaveChanges();
-                return entity.Id;
+                await dbContext.Employees.AddAsync(employee);
+                await dbContext.SaveChangesAsync();
+                return employee.Id;
             }
             catch (Exception ex)
             {
@@ -37,13 +33,13 @@ namespace Data.Repos
         }
 
 
-        public Exception DeleteEmployee(int Id)
+        public async Task<Exception> DeleteEmployee(int Id)
         {
             try
             {
-                var empToDelete = dbContext.Employees.Where(e=>e.Id==Id).FirstOrDefault();
+                var empToDelete = await dbContext.Employees.Where(e=>e.Id==Id).FirstOrDefaultAsync();
                 dbContext.Employees.Remove(empToDelete);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
                 return null;
             }
             catch (Exception ex) {
@@ -51,22 +47,22 @@ namespace Data.Repos
             }
         }
 
-        public async Task<List<EmployeeResource>> GetAllEmployees()
+        public async Task<List<Employee>> GetAllEmployees()
         {
-            return _mapper.Map<List<EmployeeResource>>(await dbContext.Employees.ToListAsync());
+            return await dbContext.Employees.ToListAsync();
         }
 
-        public async Task<EmployeeResource> GetEmployee(int Id)
+        public async Task<Employee> GetEmployee(int Id)
         {
-            return _mapper.Map<EmployeeResource>(await dbContext.Employees.Where(e => e.Id == Id).FirstOrDefaultAsync());
+            return await dbContext.Employees.Where(e => e.Id == Id).FirstOrDefaultAsync();
         }
 
-        public Exception UpdateEmployee(EmployeeVM employee)
+        public async Task<Exception> UpdateEmployee(Employee employee)
         {
             try
             {
-                dbContext.Employees.Update(_mapper.Map<Employee>(employee));
-                dbContext.SaveChanges();
+                dbContext.Employees.Update(employee);
+                await dbContext.SaveChangesAsync();
                 return null;
             }
             catch (Exception ex) {

@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Domain.Entities;
 using Domain.IRepos;
-using Domain.VMs;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -14,14 +13,13 @@ namespace Data.Repos
 {
     public partial class Repository : IRepository
     {
-        public int AddCourse(FavCourseVM course)
+        public async Task<int> AddCourse(Course course)
         {
             try
             {
-                var entity = _mapper.Map<Course>(course);
-                dbContext.Courses.Add(entity);
-                dbContext.SaveChanges();
-                return entity.Id;
+                await dbContext.Courses.AddAsync(course);
+                await dbContext.SaveChangesAsync();
+                return course.Id;
             }
             catch (Exception ex)
             {
@@ -30,13 +28,13 @@ namespace Data.Repos
         }
 
 
-        public Exception DeleteCourse(int Id)
+        public async Task<Exception> DeleteCourse(int Id)
         {
             try
             {
-                var courseToDelete = dbContext.Courses.Where(e => e.Id == Id).FirstOrDefault();
+                var courseToDelete = await dbContext.Courses.Where(e => e.Id == Id).FirstOrDefaultAsync();
                 dbContext.Courses.Remove(courseToDelete);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
                 return null;
             }
             catch (Exception ex)
@@ -45,22 +43,22 @@ namespace Data.Repos
             }
         }
 
-        public async Task<List<FavCourseResource>> GetAllCourses()
+        public async Task<List<Course>> GetAllCourses()
         {
-            return _mapper.Map<List<FavCourseResource>>(await dbContext.Courses.ToListAsync());
+            return await dbContext.Courses.ToListAsync();
         }
 
-        public async Task<FavCourseResource> GetCourse(int Id)
+        public async Task<Course> GetCourse(int Id)
         {
-            return _mapper.Map<FavCourseResource>(await dbContext.Courses.Where(e => e.Id == Id).FirstOrDefaultAsync());
+            return await dbContext.Courses.Where(e => e.Id == Id).FirstOrDefaultAsync();
         }
 
-        public Exception UpdateCourse(FavCourseVM course)
+        public async Task<Exception> UpdateCourse(Course course)
         {
             try
             {
-                dbContext.Courses.Update(_mapper.Map<Course>(course));
-                dbContext.SaveChanges();
+                dbContext.Courses.Update(course);
+                await dbContext.SaveChangesAsync();
                 return null;
             }
             catch (Exception ex) {

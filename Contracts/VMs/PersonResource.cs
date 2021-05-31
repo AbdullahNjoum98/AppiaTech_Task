@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.VMs
+namespace Cotracts.VMs
 {
-    public class PersonVM
+    public class PersonResource
     {
         public Int64 Id { get; set; }
         [Required]

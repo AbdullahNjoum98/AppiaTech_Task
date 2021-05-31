@@ -1,5 +1,5 @@
 ﻿using Domain.Entities;
-using Domain.VMs;
+using Cotracts.VMs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Nest;
@@ -43,17 +43,6 @@ namespace TaskAPI
                                      basicProperties: null,
                                      body: body);
             }
-        }
-        public static bool CustomContains<T>(List<T> list, T item)
-        {
-            if ( list == null || list.Count == 0 || item == null) return false;
-            foreach (var listItem in list)
-            {
-                if ((int)listItem.GetType().GetProperty("Id").GetValue(listItem) ==
-                    (int)item.GetType().GetProperty("Id").GetValue(item))
-                    return true;
-            }
-            return false;
         }
         public static void AddElasticsearch(this IServiceCollection services, IConfiguration configuration)
         {

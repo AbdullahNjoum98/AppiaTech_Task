@@ -3,7 +3,7 @@ using Data.Configurations;
 using Data.Repos;
 using Domain.Entities;
 using Domain.IRepos;
-using Domain.VMs;
+using Cotracts.VMs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
@@ -12,7 +12,6 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
 using System.Text;
-using TaskAPI;
 
 namespace Consumer
 {
@@ -25,7 +24,6 @@ namespace Consumer
             var serviceProvider = new ServiceCollection()
                 .AddDbContext<ProjectDbContext>(options =>
                 options.UseSqlServer(Connection))
-                .AddAutoMapper(typeof(AutoMapping))
                 .AddScoped<TeacherServices>()
                 .BuildServiceProvider();
 

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.VMs
+namespace Cotracts.VMs
 {
     public class EmployeeVM: PersonVM
     {

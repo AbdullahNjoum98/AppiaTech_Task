@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.VMs
+namespace Cotracts.VMs
 {
-    public class TeacherVM
+    public class TeacherReource
     {
         public int Id { get; set; }
         [MaxLength(30)]

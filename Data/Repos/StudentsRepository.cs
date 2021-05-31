@@ -1,6 +1,5 @@
 ﻿using Domain.Entities;
 using Domain.IRepos;
-using Domain.VMs;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -12,24 +11,18 @@ namespace Data.Repos
 {
     public partial class Repository : IRepository
     {
-        public long AddStudent(StudentVM student)
+        public async Task<long> AddStudent(Student student)
         {
             try
             {
-                var courses = dbContext.Courses.Where(e => student.favCourses.Contains(e.Id)).ToList();
-                var teacher = dbContext.Teachers.Where(e => student.teacher==e.Id).FirstOrDefault();
-
-                Student studentToAdd = new Student
-                {
-                    Name = student.Name,
-                    Email = student.Email,
-                    Phone = student.Phone,
-                    favCourses = courses,
-                    Teacher=teacher,
-                };
-                dbContext.Students.Add(studentToAdd);
-                dbContext.SaveChanges();
-                return studentToAdd.Id;
+                var teacher = await dbContext.Teachers.Where(e => student.TeacherId==e.Id).FirstOrDefaultAsync();
+                if (teacher == null) 
+                    throw new Exception("Teacher id is not found");
+                student.Teacher = teacher;
+                
+                await dbContext.Students.AddAsync(student);
+                await dbContext.SaveChangesAsync();
+                return student.Id;
             }
             catch (Exception ex)
             {
@@ -38,13 +31,13 @@ namespace Data.Repos
         }
 
 
-        public Exception DeleteStudent(int Id)
+        public async Task<Exception> DeleteStudent(int Id)
         {
             try
             {
-                var studentToDelete = dbContext.Students.Include(e=>e.favCourses).Include(e => e.Teacher).Where(e => e.Id == Id).FirstOrDefault();
+                var studentToDelete = await dbContext.Students.Include(e=>e.favCourses).Include(e => e.Teacher).Where(e => e.Id == Id).FirstOrDefaultAsync();
                 dbContext.Students.Remove(studentToDelete);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
                 return null;
             }
             catch (Exception ex)
@@ -53,37 +46,28 @@ namespace Data.Repos
             }
         }
 
-        public async Task<List<StudentResource>> GetAllStudents()
+        public async Task<List<Student>> GetAllStudents()
         {
-            return _mapper.Map<List<StudentResource>>(await dbContext.Students.Include(e=>e.favCourses).Include(e=>e.Teacher).ToListAsync());
+            return await dbContext.Students.Include(e=>e.favCourses).Include(e=>e.Teacher).ToListAsync();
         }
 
-        public async Task<StudentResource> GetStudent(int Id)
+        public async Task<Student> GetStudent(int Id)
         {
-            return _mapper.Map<StudentResource>(await dbContext.Students.Include(e=>e.favCourses).Include(e => e.Teacher).Where(e => e.Id == Id).FirstOrDefaultAsync());
-
+            var student = await dbContext.Students.Include(e=>e.favCourses).Include(e => e.Teacher).Where(e => e.Id == Id).FirstOrDefaultAsync();
+            return student;
         }
 
-        public Exception UpdateStudent(StudentVM student)
+        public async Task<Exception> UpdateStudent(Student student)
         {
             try
             {
-                var courses = dbContext.Courses.Where(e => student.favCourses.Contains(e.Id)).ToList();
-                var teacher = dbContext.Teachers.Where(e => student.teacher == e.Id).FirstOrDefault();
-                Student studentToAdd = new Student
-                {
-                    Id=student.Id,
-                    Name = student.Name,
-                    Email = student.Email,
-                    Phone = student.Phone,
-                    favCourses = courses,
-                    Teacher=teacher
-                };
-                //dbContext.Entry(studentToAdd).CurrentValues.SetValues(studentToAdd);
-                var entity = dbContext.Students.Where(e => e.Id == studentToAdd.Id).FirstOrDefault();
-                dbContext.Students.Remove(entity);
-                dbContext.Students.Add(studentToAdd);
-                dbContext.SaveChanges();
+                var teacher = await dbContext.Teachers.Where(e => student.TeacherId == e.Id).FirstOrDefaultAsync();
+                if (teacher == null)
+                    throw new Exception("Teacher id is not found");
+                student.Teacher = teacher;
+
+                dbContext.Students.Update(student);
+                await dbContext.SaveChangesAsync();
                 return null;
             }
             catch (Exception ex)

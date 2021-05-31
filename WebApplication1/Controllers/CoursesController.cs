@@ -1,10 +1,11 @@
 ﻿using Domain.IRepos;
-using Domain.VMs;
+using Cotracts.VMs;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Domain;
 
 namespace TaskAPI.Controllers
 {
@@ -13,46 +14,42 @@ namespace TaskAPI.Controllers
     [ApiController]
     public class CoursesController : Controller
     {
-        private readonly IRepository repository;
+        private readonly IManager manager;
 
-        public CoursesController(IRepository repository)
+        public CoursesController(IManager manager)
         {
-            this.repository = repository;
+            this.manager = manager;
         }
         [HttpGet]
-        public Task<List<FavCourseResource>> GetAllCourses()
+        public async Task<IActionResult> GetAllCourses()
         {
-            return repository.GetAllCourses();
+            var courses = await manager.GetAllCourses();
+            return Ok(courses);
         }
         [HttpGet("{Id}")]
-        public Task<FavCourseResource> GetCourse(int Id)
+        public async Task<IActionResult> GetCourse(int Id)
         {
-            return repository.GetCourse(Id);
+            var course = await manager.GetCourse(Id);
+            return Ok(course);
         }
         [HttpPost]
-        public Task<FavCourseResource> AddCourse([FromBody] FavCourseVM course)
+        public async Task<IActionResult> AddCourse([FromBody] FavCourseVM course)
         {
-            var Id = repository.AddCourse(course);
-            if (Id != 0)
-                return repository.GetCourse((int)course.Id);
-            else
-                return null;
+            var addedCourse = await manager.AddCourse(course);
+            return Ok(addedCourse);
         }
         [HttpPut]
-        public Task<FavCourseResource> UpdateCourse([FromBody] FavCourseVM course)
+        public async Task<IActionResult> UpdateCourse([FromBody] FavCourseVM course)
         {
-            Exception excepton = repository.UpdateCourse(course);
-            if (excepton == null)
-                return repository.GetCourse((int)course.Id);
-            else
-                return null;
+            var updatedCourse = await manager.UpdateCourse(course);
+            return Ok(updatedCourse);
         }
         [HttpDelete("{Id}")]
-        public IActionResult DeleteCourse(int id)
+        public async Task<IActionResult> DeleteCourse(int id)
         {
-            Exception exception = repository.DeleteCourse(id);
+            Exception exception = await manager.DeleteCourse(id);
             if ( exception == null)
-                return Ok();
+                return NoContent();
             else
             {
                 return BadRequest(HelperMethods.getException(exception));

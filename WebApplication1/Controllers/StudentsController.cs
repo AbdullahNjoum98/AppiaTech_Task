@@ -1,18 +1,7 @@
-﻿using Data;
-using Data.Repos;
-using Domain.Entities;
-using Domain.IRepos;
-using Domain.VMs;
+﻿using Cotracts.VMs;
+using Domain;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Text.Json;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace TaskAPI.Controllers
@@ -21,51 +10,43 @@ namespace TaskAPI.Controllers
     [ApiController]
     public class StudentsController : Controller
     {
-        private readonly IRepository repository;
+        private readonly IManager manager;
 
-        public StudentsController(IRepository repository)
+        public StudentsController(IManager manager)
         {
-            this.repository = repository;
+            this.manager = manager;
         }
 
         [HttpGet]
-        public Task<List<StudentResource>> GetAllStudents()
+        public async Task<IActionResult> GetAllStudents()
         {
-            return repository.GetAllStudents();
+            var students = await manager.GetAllStudents();
+            return Ok(students);
         }
         [HttpGet("{Id}")]
-        public Task<StudentResource> GetStudent(int Id)
+        public async Task<IActionResult> GetStudent(int Id)
         {
-            return repository.GetStudent(Id);
+            var student = await manager.GetStudent(Id);
+            return Ok(student);
         }
         [HttpPost]
-        public async Task<StudentResource> AddStudent([FromBody] StudentVM student)
+        public async Task<IActionResult> AddStudent([FromBody] StudentVM student)
         {
-            var id = repository.AddStudent(student);
-            if(id != 0)
-            {
-                var newStudent= await repository.GetStudent((int)id);
-                return newStudent;
-            }
-            else
-                return null;
-
+            var studentAdded = await manager.AddStudent(student);
+            return Ok(studentAdded);
         }
         [HttpPut]
-        public Task<StudentResource> UpdateStudent([FromBody] StudentVM student)
+        public async Task<IActionResult> UpdateStudent([FromBody] StudentVM student)
         {
-             var exception = repository.UpdateStudent(student);
-            if (exception == null)
-                return repository.GetStudent((int)student.Id);
-            else
-                return null;
+            var studentUpdated = await manager.UpdateStudent(student);
+            return Ok(studentUpdated);
         }
         [HttpDelete("{Id}")]
-        public IActionResult DeleteStudent(int Id)
+        public async Task<IActionResult> DeleteStudent(int Id)
         {
-            var exception = repository.DeleteStudent(Id);
+            var exception = await manager.DeleteStudent(Id);
             if (exception == null)
-                return Ok();
+                return NoContent();
             else 
                 return BadRequest(HelperMethods.getException(exception));
         }

@@ -5,13 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.VMs
+namespace Cotracts.VMs
 {
-    public class StudentVM:PersonVM
+    public class EmployeeResource:PersonResource
     {
-        [Required]
-        public List<int> favCourses { get; set; }
-        public int teacher { get; set; }
-
+        [Range(1000, 9999)]
+        public double Salary { get; set; }
     }
 }

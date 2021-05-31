@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.VMs
+namespace Cotracts.VMs
 {
-    public class FavCourseVM
+    public class FavCourseResource
     {
         public int Id { get; set; }
         [Required]
@@ -18,5 +18,6 @@ namespace Domain.VMs
         [MinLength(5)]
         [MaxLength(30)]
         public string Name { get; set; }
+
     }
 }

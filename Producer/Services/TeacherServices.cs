@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
+using Cotracts.VMs;
 using Data;
 using Domain.Entities;
-using Domain.VMs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
@@ -12,24 +12,22 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using TaskAPI;
+using Domain.Mappers;
 
 namespace Consumer
 {
     public class TeacherServices
     {
         private readonly ProjectDbContext dBContext;
-        private readonly IMapper mapper;
         private const string host = "https://localhost:44398/Teachers";
 
-        public TeacherServices(ProjectDbContext dBContext, IMapper mapper)
+        public TeacherServices(ProjectDbContext dBContext)
         {
             this.dBContext = dBContext;
-            this.mapper = mapper;
         }
         public async Task Harvest()
         {
-            var originalTeachers = mapper.Map<List<Teacher>>(await this.GetAllTeachers());
+            var originalTeachers = await this.GetAllTeachers();
             List<Teacher> currentTeachers = new List<Teacher>();
 
             currentTeachers = await dBContext.Teachers.ToListAsync();
@@ -88,7 +86,7 @@ namespace Consumer
         {
             try
             {
-                TeacherVM josnObject = new TeacherVM();
+                Teacher josnObject = new Teacher();
                 var api = host + $"/{teacherId}";
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
                 request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
@@ -98,9 +96,9 @@ namespace Consumer
                 using (StreamReader reader = new StreamReader(stream))
                 {
                     var item = await reader.ReadToEndAsync();
-                    josnObject = JsonConvert.DeserializeObject<TeacherVM>(item);
+                    josnObject = JsonConvert.DeserializeObject<Teacher>(item);
                 }
-                dBContext.Teachers.Add(mapper.Map<Teacher>(josnObject));
+                dBContext.Teachers.Add(josnObject);
                 dBContext.SaveChanges();
                 return null;
             }
@@ -126,9 +124,9 @@ namespace Consumer
             }
         }
 
-        public async Task<List<TeacherReource>> GetAllTeachers()
+        public async Task<List<Teacher>> GetAllTeachers()
         {
-            List<TeacherReource> josnObject = new List<TeacherReource>();
+            List<Teacher> josnObject = new List<Teacher>();
             var api = host;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
             request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
@@ -138,21 +136,21 @@ namespace Consumer
             using (StreamReader reader = new StreamReader(stream))
             {
                 var item = await reader.ReadToEndAsync();
-                josnObject = JsonConvert.DeserializeObject<List<TeacherReource>>(item);
+                josnObject = JsonConvert.DeserializeObject<List<Teacher>>(item);
             }
             return josnObject;
         }
 
-        public async Task<TeacherReource> GetTeacher(int Id)
+        public async Task<Teacher> GetTeacher(int Id)
         {
-            return mapper.Map<TeacherReource>(await dBContext.Teachers.Where(e => e.Id == Id).FirstOrDefaultAsync());
+            return await dBContext.Teachers.Where(e => e.Id == Id).FirstOrDefaultAsync();
         }
 
         public async Task<Exception> UpdateTeacher(int teacherId)
         {
             try
             {
-                TeacherVM josnObject = new TeacherVM();
+                Teacher josnObject = new Teacher();
                 var api = host + $"/{teacherId}";
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
                 request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
@@ -162,11 +160,11 @@ namespace Consumer
                 using (StreamReader reader = new StreamReader(stream))
                 {
                     var item = await reader.ReadToEndAsync();
-                    josnObject = JsonConvert.DeserializeObject<TeacherVM>(item);
+                    josnObject = JsonConvert.DeserializeObject<Teacher>(item);
                 }
-                var entity =  mapper.Map<Teacher>(await dBContext.Teachers.Where(e=>e.Id == josnObject.Id).FirstOrDefaultAsync());
+                var entity =  await dBContext.Teachers.Where(e=>e.Id == josnObject.Id).FirstOrDefaultAsync();
                 dBContext.Teachers.Remove(entity);
-                await dBContext.AddAsync(mapper.Map<Teacher>(josnObject));
+                await dBContext.AddAsync(josnObject);
                 dBContext.SaveChanges();
                 return null;
             }
