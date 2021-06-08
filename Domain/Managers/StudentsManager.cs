@@ -69,11 +69,10 @@ namespace Domain.Managers
             studentToUpdate.TeacherId = student.teacher;
             studentToUpdate.favCourses = studentCourses;
 
-            var exception = repository.UpdateStudent(studentToUpdate);
+            var exception = await repository.UpdateStudent(studentToUpdate);
             if (exception == null)
             {
-                var returnedEntity = await repository.GetStudent((int)student.Id);
-                return returnedEntity.ToResource();
+                return studentToUpdate.ToResource();
             }
             else
                 return null;

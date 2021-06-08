@@ -39,7 +39,10 @@ namespace TaskAPI.Controllers
         public async Task<IActionResult> UpdateStudent([FromBody] StudentVM student)
         {
             var studentUpdated = await manager.UpdateStudent(student);
-            return Ok(studentUpdated);
+            if (studentUpdated != null)
+                return Ok(studentUpdated);
+            else
+                return BadRequest();
         }
         [HttpDelete("{Id}")]
         public async Task<IActionResult> DeleteStudent(int Id)
