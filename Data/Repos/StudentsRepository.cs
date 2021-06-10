@@ -1,6 +1,7 @@
 ﻿using Domain.Entities;
 using Domain.IRepos;
 using Microsoft.EntityFrameworkCore;
+using Nest;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,11 +23,14 @@ namespace Data.Repos
                 
                 await dbContext.Students.AddAsync(student);
                 await dbContext.SaveChangesAsync();
+                var id = student.Id;
+                //await elasticClient.IndexDocumentAsync(student);
+
                 return student.Id;
-            }
+            }  
             catch (Exception ex)
             {
-                return 0;
+                throw;
             }
         }
 

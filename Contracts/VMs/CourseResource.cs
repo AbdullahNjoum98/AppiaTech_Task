@@ -19,5 +19,20 @@ namespace Cotracts.VMs
         [MaxLength(30)]
         public string Name { get; set; }
 
+        public override bool Equals(Object obj)
+        {
+            if ((obj == null) || !this.GetType().Equals(obj.GetType()))
+            {
+                return false;
+            }
+            else
+            {
+                FavCourseResource p = (FavCourseResource)obj;
+                return Id == p.Id
+                    && Name == p.Name
+                    && Code == p.Code;
+            }
+        }
+
     }
 }
