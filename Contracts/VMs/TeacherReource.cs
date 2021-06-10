@@ -19,5 +19,19 @@ namespace Cotracts.VMs
         [Required]
         public string Degree { get; set; }
 
+        public override bool Equals(Object obj)
+        {
+            if ((obj == null) || !this.GetType().Equals(obj.GetType()))
+            {
+                return false;
+            }
+            else
+            {
+                TeacherReource p = (TeacherReource)obj;
+                return Id == p.Id
+                    && Name == p.Name
+                    && Degree == p.Degree;
+            }
+        }
     }
 }

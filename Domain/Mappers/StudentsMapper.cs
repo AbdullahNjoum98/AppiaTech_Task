@@ -11,17 +11,12 @@ namespace Domain.Mappers
     {
         public static StudentResource ToResource(this Student student)
         {
-            List<FavCourseResource> studentCourses = new List<FavCourseResource>();
-            foreach (var course in student.favCourses)
-            {
-                studentCourses.Add(course.ToResource());
-            }
             return new StudentResource()
             {
                 Id = student.Id,
                 Email = student.Email,
                 Name = student.Name,
-                favCourses = studentCourses,
+                favCourses = student.favCourses.ListToResource(),
                 Phone = student.Phone,
                 teacher = student.Teacher.ToResource()
             };
@@ -31,17 +26,12 @@ namespace Domain.Mappers
             var returnValue = new List<StudentResource>();
             foreach (var student in students)
             {
-                List<FavCourseResource> studentCourses = new List<FavCourseResource>();
-                foreach(var course in student.favCourses)
-                {
-                    studentCourses.Add(course.ToResource());
-                }
                 returnValue.Add(new StudentResource()
                 {
                     Id = student.Id,
                     Email = student.Email,
                     Name = student.Name,
-                    favCourses = studentCourses,
+                    favCourses = student.favCourses.ListToResource(),
                     Phone = student.Phone,
                     teacher = TeachersMapper.ToResource(student.Teacher)
                 });

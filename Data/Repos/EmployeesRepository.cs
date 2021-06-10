@@ -1,11 +1,10 @@
-﻿using AutoMapper;
-using Domain.Entities;
+﻿using Domain.Entities;
 using Domain.IRepos;
 using Microsoft.EntityFrameworkCore;
+using Nest;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Data.Repos
@@ -14,9 +13,12 @@ namespace Data.Repos
     {
         private readonly ProjectDbContext dbContext;
 
-        public Repository(ProjectDbContext dbContext)
+        public readonly ElasticClient elasticClient;
+
+        public Repository(ProjectDbContext dbContext, ElasticClient elasticClient)
         {
             this.dbContext = dbContext;
+            this.elasticClient = elasticClient;
         }
         public async Task<long> AddEmployee(Employee employee)
         {
@@ -37,12 +39,13 @@ namespace Data.Repos
         {
             try
             {
-                var empToDelete = await dbContext.Employees.Where(e=>e.Id==Id).FirstOrDefaultAsync();
+                var empToDelete = await dbContext.Employees.Where(e => e.Id == Id).FirstOrDefaultAsync();
                 dbContext.Employees.Remove(empToDelete);
                 await dbContext.SaveChangesAsync();
                 return null;
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 return ex;
             }
         }
@@ -65,7 +68,8 @@ namespace Data.Repos
                 await dbContext.SaveChangesAsync();
                 return null;
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 return ex;
             }
         }

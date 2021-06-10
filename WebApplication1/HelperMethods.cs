@@ -65,14 +65,14 @@ namespace TaskAPI
         {
             settings
                 .DefaultMappingFor<Student>(m => m
-                .Ignore(p => p.TeacherId)
+                //.Ignore(p => p.TeacherId)
             );
         }
 
         private static void CreateIndex(IElasticClient client, string indexName)
         {
             var createIndexResponse = client.Indices.Create(indexName,
-                index => index.Map<Student>(x => x.AutoMap())
+                index => index.Map<Student>(x =>x.AutoMap())
             );
         }
     }
