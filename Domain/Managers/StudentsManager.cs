@@ -48,10 +48,10 @@ namespace Domain.Managers
 
         public async Task<StudentResource> GetStudent(int Id)
         {
-            var student = await repository.GetStudent(Id);
-            if (student == null)
-                throw new Exception("Id is not found");
-            return student.ToResource();
+                var student = await repository.GetStudent(Id);
+                if (student == null)
+                    throw new Exception("Id is not found");
+                return student.ToResource();
         }
         public async Task<StudentResource> UpdateStudent(StudentVM student)
         {
@@ -69,13 +69,8 @@ namespace Domain.Managers
             studentToUpdate.TeacherId = student.teacher;
             studentToUpdate.favCourses = studentCourses;
 
-            var exception = await repository.UpdateStudent(studentToUpdate);
-            if (exception == null)
-            {
-                return studentToUpdate.ToResource();
-            }
-            else
-                return null;
+            var entity = await repository.UpdateStudent(studentToUpdate);
+            return studentToUpdate.ToResource();
         }
     }
 }
