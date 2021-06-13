@@ -17,13 +17,7 @@ namespace Domain.Managers
         }
         public async Task<StudentResource> AddStudent(StudentVM student)
         {
-
-            var allCourses = await repository.GetAllCourses();
-            var studentCourses = allCourses.Where(e => student.favCourses.Contains(e.Id)).ToList();
-            if (studentCourses.Count != student.favCourses.Count)
-                throw new Exception("One or more course id is not found");
             var studentEntity = student.ToEntity();
-            studentEntity.favCourses = studentCourses;
             var id = await repository.AddStudent(studentEntity);
             if (id != 0)
             {

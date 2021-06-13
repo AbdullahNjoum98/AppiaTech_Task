@@ -46,7 +46,8 @@ namespace Domain.Mappers
                 Email = student.Email,
                 Name = student.Name,
                 Phone = student.Phone,
-                TeacherId = student.teacher
+                TeacherId = student.teacher,
+                favCoursesIds = student.favCourses
             };
         }
         public static List<Student> ListToEntity(this List<StudentVM> students)
@@ -60,7 +61,8 @@ namespace Domain.Mappers
                     Email = student.Email,
                     Name = student.Name,
                     Phone = student.Phone,
-                    TeacherId = student.teacher
+                    TeacherId = student.teacher,
+                    favCoursesIds = student.favCourses
                 });
             }
             return returnValue;

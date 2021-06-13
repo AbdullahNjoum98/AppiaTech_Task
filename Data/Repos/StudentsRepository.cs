@@ -16,11 +16,15 @@ namespace Data.Repos
         {
             try
             {
-                var teacher = await dbContext.Teachers.Where(e => student.TeacherId==e.Id).FirstOrDefaultAsync();
-                if (teacher == null) 
-                    throw new Exception("Teacher id is not found");
-                student.Teacher = teacher;
-                
+                //    var teacher = await dbContext.Teachers.Where(e => student.TeacherId==e.Id).FirstOrDefaultAsync();
+                //    if (teacher == null) 
+                //        throw new Exception("Teacher id is not found");
+                //    student.Teacher = teacher;
+                var coursesIds = dbContext.Courses.Where(e => student.favCoursesIds.Contains(e.Id));
+                var courses = coursesIds.ToList();
+                if (student.favCoursesIds.Count != courses.Count)
+                    throw new Exception("Some Course Ids are not found");
+                student.favCourses = courses;
                 await dbContext.Students.AddAsync(student);
                 await dbContext.SaveChangesAsync();
                 var id = student.Id;
