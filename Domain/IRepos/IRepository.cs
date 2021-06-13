@@ -20,10 +20,10 @@ namespace Domain.IRepos
         public Task<List<Student>> GetAllStudents();
         public Task<Student> GetStudent(int Id);
         public Task<long> AddStudent(Student student);
-        public Task<Exception> UpdateStudent(Student student);
+        public Task<Student> UpdateStudent(Student student);
         public Task<Exception> DeleteStudent(int Id);
         #endregion
-        #region
+        #region Courses
         public Task<List<Course>> GetAllCourses();
         public Task<Course> GetCourse(int Id);
         public Task<int> AddCourse(Course student);

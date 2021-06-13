@@ -61,10 +61,8 @@ namespace Data.Repos
             return student;
         }
 
-        public async Task<Exception> UpdateStudent(Student student)
+        public async Task<Student> UpdateStudent(Student student)
         {
-            try
-            {
                 var teacher = await dbContext.Teachers.Where(e => student.TeacherId == e.Id).FirstOrDefaultAsync();
                 if (teacher == null)
                     throw new Exception("Teacher id is not found");
@@ -72,12 +70,7 @@ namespace Data.Repos
 
                 dbContext.Students.Update(student);
                 await dbContext.SaveChangesAsync();
-                return null;
-            }
-            catch (Exception ex)
-            {
-                return ex;
-            }
+                return student;
         }
     }
 }
